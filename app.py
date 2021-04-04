@@ -17,7 +17,10 @@ def render_departure(departure):
 
 @app.route('/tours/<int:tour_id>/')
 def render_tours(tour_id):
-    return render_template('tour.html', tour=data.tours[tour_id], page=data)
+    try:
+        return render_template('tour.html', tour=data.tours[tour_id], page=data)
+    except KeyError:
+        return "Нет такого тура!!"
 
 
 @app.errorhandler(404)
