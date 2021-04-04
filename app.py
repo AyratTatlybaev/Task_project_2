@@ -6,32 +6,29 @@ app = Flask(__name__)
 
 @app.route('/')
 def main():
-    return render_template('index.html')
+    return render_template('index.html', page=data)
 
 
 @app.route('/departures/<departure>/')
 def render_departure(departure):
-    return render_template('departure.html', departure=data.departures[departure])
+    return render_template('departure.html', departure=departure, page=data,
+                            tours=list(filter(lambda x: x["departure"] == departure, data.tours.values())))
 
 
-@app.route('/tours/<int:id>/')
-def render_tours(id):
-    return render_template('tour.html', id_tour=data.tours[id])
+@app.route('/tours/<int:tour_id>/')
+def render_tours(tour_id):
+    return render_template('tour.html', tour=data.tours[tour_id], page=data)
 
 
-@app.route('/data')
-def render_data_tours():
-    return render_template('data.html')
+@app.errorhandler(404)
+def render_not_found(error):
+    return "Ничего не нашлось! Вот неудача, отправляйтесь на главную"
 
 
-@app.route('/data/departures/<departure>/')
-def render_data_departure(departure):
-    return render_template('departures.html')
+@app.errorhandler(500)
+def render_server_error(error):
+    return "Что-то не так, но мы все починим:\n{}".format(error), 404
 
-
-@app.route('/data/tours/<int:id>')
-def render_data_tours_id(id):
-    return render_template('tours.html')
 
 # Run server
 app.run(debug=True)
