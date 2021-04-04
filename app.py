@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+
 import data
 
 app = Flask(__name__)
@@ -12,7 +13,8 @@ def main():
 @app.route('/departures/<departure>/')
 def render_departure(departure):
     return render_template('departure.html', departure=departure, page=data,
-                            tours=list(filter(lambda x: x["departure"] == departure, data.tours.values())))
+                            tours=list(filter(lambda x: x["departure"] == departure,
+                                              data.tours.values())))
 
 
 @app.route('/tours/<int:tour_id>/')
@@ -24,7 +26,7 @@ def render_tours(tour_id):
 
 
 @app.errorhandler(404)
-def render_not_found(error):
+def render_not_found():
     return "Ничего не нашлось! Вот неудача, отправляйтесь на главную"
 
 
@@ -34,4 +36,5 @@ def render_server_error(error):
 
 
 # Run server
-app.run(debug=True)
+if __name__ == '__main__':
+    app.run()
